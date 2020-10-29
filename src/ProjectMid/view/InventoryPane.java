@@ -1,6 +1,6 @@
-package View;
+package ProjectMid.view;
 
-import Item.BasedCharacter;
+import ProjectMid.Item.BasedCharacter;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.ScrollPane;
@@ -13,8 +13,8 @@ import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 
-import static Controller.AllCustomHandler.onDragDetected;
-import static Controller.AllCustomHandler.onEquipDone;
+import static ProjectMid.controller.AllCustomHandler.onDragDetected;
+import static ProjectMid.controller.AllCustomHandler.onEquipDone;
 
 
 public class InventoryPane extends ScrollPane {
@@ -34,18 +34,8 @@ public class InventoryPane extends ScrollPane {
                 imageViewList[i].setImage(new Image(getClass().getClassLoader().
                         getResource(equipmentArray.get(i).getImagepath()).toString()));
                 int finalI = i;
-                imageViewList[i].setOnDragDetected(new EventHandler<MouseEvent>() {
-                    public void handle(MouseEvent event) {
-                        onDragDetected(event, equipmentArray.get(finalI), imageViewList[finalI]);
-                    }
-                });
-                imageViewList[i].setOnDragDone(new EventHandler<DragEvent>() {
-
-                    @Override
-                    public void handle(DragEvent event) {
-                        onEquipDone(event);
-                    }
-                });
+                imageViewList[i].setOnDragDetected(event -> onDragDetected(event, equipmentArray.get(finalI), imageViewList[finalI]));
+                imageViewList[i].setOnDragDone(event -> onEquipDone(event));
             }
             inventoryInfoPane.getChildren().addAll(imageViewList);
         }

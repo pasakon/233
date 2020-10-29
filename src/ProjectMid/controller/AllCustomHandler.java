@@ -1,7 +1,8 @@
-package Controller;
+package ProjectMid.controller;
 
-import Item.BasedCharacter;
-import Item.listCharacter;
+import ProjectMid.Item.BasedCharacter;
+import ProjectMid.Item.listCharacter;
+import ProjectMid.model.Select;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
@@ -15,27 +16,18 @@ import java.util.ArrayList;
 
 
 public class AllCustomHandler {
-
-
-    public static class GenHeroHandler implements EventHandler<ActionEvent> {
-        @Override
-        public void handle(ActionEvent event) {
-
-            Launcher.refreshPane();
-        }
-    }
+    public static String bg = "/ProjectMid/assets/Background.png";
+    static boolean dragCompleted;
 
     public static class Unequip implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-
-
-            if (Launcher.getEquippedArmor() != null) {
-                Launcher.setEquippedArmor(null);
-                Launcher.setAllEquipments(GenItemList.setUpIList());
+            BasedCharacter equip = Select.getMainCharacter();
+            if (Select.getEquippedArmor() != null) {
+                Select.setEquippedArmor(null);
+                Select.setAllEquipments(GenItemList.setUpIList());
             }
-
-            Launcher.refreshPane();
+            Select.refreshPane();
         }
     }
     public static void onDragDetected(MouseEvent event, BasedCharacter equipment, ImageView imgView) {
@@ -55,27 +47,26 @@ public class AllCustomHandler {
     }
 
     public static void onDragDropped(DragEvent event, Label lbl, StackPane imgGroup) {
-        boolean dragCompleted = false;
+        dragCompleted = false;
         Dragboard dragboard = event.getDragboard();
-        ArrayList<BasedCharacter> allEquipments = Launcher.getBasedCharacter();
+        ArrayList<BasedCharacter> allEquipments = Select.getBasedCharacter();
         if (dragboard.hasContent(BasedCharacter.DATA_FORMAT)) {
             BasedCharacter retrievedEquipment = (BasedCharacter) dragboard.getContent(BasedCharacter.DATA_FORMAT);
             //ArrayList<BasedCharacter> character = Launcher.getMainCharacter();
 
             if (retrievedEquipment.getClass().getSimpleName().equals("listCharacter")) {
-                if (Launcher.getEquippedArmor() != null) {
-                    allEquipments.add(Launcher.getEquippedArmor());
+                if (Select.getEquippedArmor() != null) {
+                    allEquipments.add(Select.getEquippedArmor());
                 }
-                Launcher.setEquippedArmor((listCharacter) retrievedEquipment);
+                Select.setEquippedArmor((listCharacter) retrievedEquipment);
 
             }
-
-            Launcher.setAllEquipments(allEquipments);
-            Launcher.refreshPane();
+            Select.setAllEquipments(allEquipments);
+            Select.refreshPane();
             ImageView imgView = new ImageView();
             if (imgGroup.getChildren().size() != 1) {
                 imgGroup.getChildren().remove(1);
-                Launcher.refreshPane();
+                Select.refreshPane();
             }
             lbl.setText(retrievedEquipment.getClass().getSimpleName() + ":\n" + retrievedEquipment.getName());
             imgView.setImage(new Image(AllCustomHandler.class.getClassLoader().getResource(retrievedEquipment.getImagepath()).toString()));
@@ -85,9 +76,13 @@ public class AllCustomHandler {
         event.setDropCompleted(dragCompleted);
     }
 
+    public String getBackground(){
+        return bg;
+    }
+
     public static void onEquipDone(DragEvent event) {
         Dragboard dragboard = event.getDragboard();
-        ArrayList<BasedCharacter> allEquipments = Launcher.getBasedCharacter();
+        ArrayList<BasedCharacter> allEquipments = Select.getBasedCharacter();
         BasedCharacter retrievedEquipment = (BasedCharacter) dragboard.getContent(
                 BasedCharacter.DATA_FORMAT);
         int pos = -1;
@@ -99,9 +94,7 @@ public class AllCustomHandler {
         if (pos != -1) {
             allEquipments.remove(pos);
         }
-        Launcher.setAllEquipments(allEquipments);
-        Launcher.refreshPane();
+        Select.setAllEquipments(allEquipments);
+        Select.refreshPane();
     }
-
-
 }
